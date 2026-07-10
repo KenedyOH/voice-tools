@@ -22,6 +22,31 @@ function actualizarPeer(){
     `show configuration sip-interface ${peer} short`;
 }
 
+/* NUEVA FUNCIÓN DE AVISO */
+function mostrarAviso(mensaje){
+
+    let aviso = document.createElement("div");
+
+    aviso.innerText = mensaje;
+
+    aviso.style.position = "fixed";
+    aviso.style.bottom = "20px";
+    aviso.style.right = "20px";
+    aviso.style.background = "#28a745";
+    aviso.style.color = "white";
+    aviso.style.padding = "12px 20px";
+    aviso.style.borderRadius = "5px";
+    aviso.style.boxShadow = "0 2px 5px rgba(0,0,0,.3)";
+    aviso.style.zIndex = "9999";
+    aviso.style.fontFamily = "Arial, sans-serif";
+
+    document.body.appendChild(aviso);
+
+    setTimeout(() => {
+        aviso.remove();
+    }, 2000);
+}
+
 function copiar(id){
 
     let texto =
@@ -29,7 +54,7 @@ function copiar(id){
 
     navigator.clipboard.writeText(texto);
 
-    mostrarMensaje("✅ Comando copiado");
+    mostrarAviso("✅ Comando copiado");
 }
 
 function generarResumen(){
@@ -80,31 +105,7 @@ function copiarResumen(){
 
     navigator.clipboard.writeText(texto);
 
-    mostrarMensaje("✅ Resumen copiado");
-}
-
-function mostrarMensaje(texto){
-
-    let aviso = document.createElement("div");
-
-    aviso.innerText = texto;
-
-    aviso.style.position = "fixed";
-    aviso.style.top = "20px";
-    aviso.style.right = "20px";
-    aviso.style.background = "#28a745";
-    aviso.style.color = "white";
-    aviso.style.padding = "12px 18px";
-    aviso.style.borderRadius = "8px";
-    aviso.style.boxShadow = "0 2px 10px rgba(0,0,0,0.2)";
-    aviso.style.fontWeight = "bold";
-    aviso.style.zIndex = "9999";
-
-    document.body.appendChild(aviso);
-
-    setTimeout(() => {
-        aviso.remove();
-    }, 2000);
+    mostrarAviso("✅ Resumen copiado");
 }
 
 </script>
