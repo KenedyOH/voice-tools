@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Asistente Voice</title>
 
 <style>
@@ -28,10 +27,12 @@ input{
     padding:10px;
     margin-top:5px;
     margin-bottom:10px;
+    box-sizing:border-box;
 }
 
 textarea{
     width:100%;
+    box-sizing:border-box;
 }
 
 button{
@@ -49,15 +50,10 @@ button:hover{
 
 .comando{
     background:#efefef;
-    padding:10px;
-    margin-top:10px;
+    padding:12px;
     border-radius:5px;
-    font-family:consolas;
-    word-break: break-word;
-}
-
-.oculto{
-    display:none;
+    font-family:Consolas, monospace;
+    word-break:break-word;
 }
 </style>
 
@@ -69,112 +65,112 @@ button:hover{
 
 <div class="card">
 
-<label>Número afectado</label>
-<input type="text" id="numero">
+    <label>Número afectado</label>
+    <input type="text" id="numero">
 
-<label>IP Core</label>
-<input type="text" id="ipcore">
+    <label>IP Core</label>
+    <input type="text" id="ipcore">
 
-<label>Nombre Core</label>
-<input type="text" id="core" onkeyup="actualizarCore()">
-
-</div>
-
-<div class="card">
-
-<h3>Paso 1 - Obtener Peer</h3>
-
-<div id="cmdPeer" class="comando"></div>
-
-<br>
-
-<button onclick="copiar('cmdPeer')">
-Copiar comando
-</button>
-
-<br><br>
-
-<label>Peer obtenido</label>
-<input type="text" id="peer" onkeyup="actualizarPeer()">
+    <label>Nombre Core</label>
+    <input type="text" id="core" oninput="actualizarCore()">
 
 </div>
 
 <div class="card">
 
-<h3>Paso 2 - Obtener Interface Core</h3>
+    <h3>Paso 1 - Obtener Peer</h3>
 
-<div id="cmdIntCore" class="comando"></div>
+    <div id="cmdPeer" class="comando"></div>
 
-<br>
+    <br>
 
-<button onclick="copiar('cmdIntCore')">
-Copiar comando
-</button>
+    <button onclick="copiar('cmdPeer')">
+        Copiar comando
+    </button>
 
-<br><br>
+    <br><br>
 
-<label>Interface Core</label>
-<input type="text" id="intcore">
-
-</div>
-
-<div class="card">
-
-<h3>Paso 3 - Obtener Interface Peer</h3>
-
-<div id="cmdIntPeer" class="comando"></div>
-
-<br>
-
-<button onclick="copiar('cmdIntPeer')">
-Copiar comando
-</button>
-
-<br><br>
-
-<label>Interface Peer</label>
-<input type="text" id="intpeer">
+    <label>Peer obtenido</label>
+    <input type="text" id="peer" oninput="actualizarPeer()">
 
 </div>
 
 <div class="card">
 
-<h3>Paso 4 - Obtener IP Peer</h3>
+    <h3>Paso 2 - Obtener Interface Core</h3>
 
-<div id="cmdIpPeer" class="comando"></div>
+    <div id="cmdIntCore" class="comando"></div>
 
-<br>
+    <br>
 
-<button onclick="copiar('cmdIpPeer')">
-Copiar comando
-</button>
+    <button onclick="copiar('cmdIntCore')">
+        Copiar comando
+    </button>
 
-<br><br>
+    <br><br>
 
-<label>IP Peer</label>
-<input type="text" id="ippeer">
-
-</div>
-
-<div class="card">
-
-<button onclick="generarResumen()">
-Generar Resumen
-</button>
+    <label>Interface Core</label>
+    <input type="text" id="intcore">
 
 </div>
 
 <div class="card">
 
-<h3>Resumen Final</h3>
+    <h3>Paso 3 - Obtener Interface Peer</h3>
 
-<textarea id="resultado" rows="15"></textarea>
+    <div id="cmdIntPeer" class="comando"></div>
 
-<br><br>
+    <br>
 
-<button onclick="copiarResumen()">
-Copiar Resumen
-</button>
+    <button onclick="copiar('cmdIntPeer')">
+        Copiar comando
+    </button>
+
+    <br><br>
+
+    <label>Interface Peer</label>
+    <input type="text" id="intpeer">
+
+</div>
+
+<div class="card">
+
+    <h3>Paso 4 - Obtener IP Peer</h3>
+
+    <div id="cmdIpPeer" class="comando"></div>
+
+    <br>
+
+    <button onclick="copiar('cmdIpPeer')">
+        Copiar comando
+    </button>
+
+    <br><br>
+
+    <label>IP Peer</label>
+    <input type="text" id="ippeer">
+
+</div>
+
+<div class="card">
+
+    <button onclick="generarResumen()">
+        Generar Resumen
+    </button>
+
+</div>
+
+<div class="card">
+
+    <h3>Resumen Final</h3>
+
+    <textarea id="resultado" rows="15"></textarea>
+
+    <br><br>
+
+    <button onclick="copiarResumen()">
+        Copiar Resumen
+    </button>
 
 </div>
 
@@ -182,51 +178,61 @@ Copiar Resumen
 
 function actualizarCore(){
 
-let core=document.getElementById("core").value;
+    let core = document.getElementById("core").value;
 
-document.getElementById("cmdPeer").innerText=
-`show configuration local-policy "${core}" short`;
+    document.getElementById("cmdPeer").innerText =
+    `show configuration local-policy ${core} short`;
 
-document.getElementById("cmdIntCore").innerText=
-`show configuration realm-config "${core}" short`;
-
+    document.getElementById("cmdIntCore").innerText =
+    `show configuration realm-config ${core} short`;
 }
 
 function actualizarPeer(){
 
-let peer=document.getElementById("peer").value;
+    let peer = document.getElementById("peer").value;
 
-document.getElementById("cmdIntPeer").innerText=
-`show configuration realm-config "${peer}" short`;
+    document.getElementById("cmdIntPeer").innerText =
+    `show configuration realm-config ${peer} short`;
 
-document.getElementById("cmdIpPeer").innerText=
-`show configuration sip-interface "${peer}" short`;
-
+    document.getElementById("cmdIpPeer").innerText =
+    `show configuration sip-interface ${peer} short`;
 }
 
 function copiar(id){
 
-let texto=document.getElementById(id).innerText;
+    let texto =
+    document.getElementById(id).innerText;
 
-navigator.clipboard.writeText(texto);
+    navigator.clipboard.writeText(texto);
 
-alert("Comando copiado");
+    alert("Comando copiado");
 }
 
 function generarResumen(){
 
-let numero=document.getElementById("numero").value;
-let ipcore=document.getElementById("ipcore").value;
-let core=document.getElementById("core").value;
-let intcore=document.getElementById("intcore").value;
+    let numero =
+    document.getElementById("numero").value;
 
-let ippeer=document.getElementById("ippeer").value;
-let peer=document.getElementById("peer").value;
-let intpeer=document.getElementById("intpeer").value;
+    let ipcore =
+    document.getElementById("ipcore").value;
 
-let salida=
+    let core =
+    document.getElementById("core").value;
+
+    let intcore =
+    document.getElementById("intcore").value;
+
+    let ippeer =
+    document.getElementById("ippeer").value;
+
+    let peer =
+    document.getElementById("peer").value;
+
+    let intpeer =
+    document.getElementById("intpeer").value;
+
+    let salida =
 `Numeración afectada:
-
 ${numero}
 
 IP CORE
@@ -239,18 +245,18 @@ ${ippeer}
 ${peer}
 ${intpeer}`;
 
-document.getElementById("resultado").value=salida;
-
+    document.getElementById("resultado").value =
+    salida;
 }
 
 function copiarResumen(){
 
-let texto=document.getElementById("resultado").value;
+    let texto =
+    document.getElementById("resultado").value;
 
-navigator.clipboard.writeText(texto);
+    navigator.clipboard.writeText(texto);
 
-alert("Resumen copiado");
-
+    alert("Resumen copiado");
 }
 
 </script>
