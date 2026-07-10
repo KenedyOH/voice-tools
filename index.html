@@ -22,12 +22,11 @@ function actualizarPeer(){
     `show configuration sip-interface ${peer} short`;
 }
 
-/* NUEVA FUNCIÓN DE AVISO */
-function mostrarAviso(mensaje){
+function mostrarAviso(mensaje) {
 
-    let aviso = document.createElement("div");
+    const aviso = document.createElement("div");
 
-    aviso.innerText = mensaje;
+    aviso.textContent = mensaje;
 
     aviso.style.position = "fixed";
     aviso.style.bottom = "20px";
@@ -36,13 +35,12 @@ function mostrarAviso(mensaje){
     aviso.style.color = "white";
     aviso.style.padding = "12px 20px";
     aviso.style.borderRadius = "5px";
-    aviso.style.boxShadow = "0 2px 5px rgba(0,0,0,.3)";
     aviso.style.zIndex = "9999";
     aviso.style.fontFamily = "Arial, sans-serif";
 
     document.body.appendChild(aviso);
 
-    setTimeout(() => {
+    setTimeout(function () {
         aviso.remove();
     }, 2000);
 }
@@ -54,7 +52,7 @@ function copiar(id){
 
     navigator.clipboard.writeText(texto);
 
-    mostrarAviso("✅ Comando copiado");
+    mostrarAviso("Comando copiado");
 }
 
 function generarResumen(){
@@ -105,7 +103,7 @@ function copiarResumen(){
 
     navigator.clipboard.writeText(texto);
 
-    mostrarAviso("✅ Resumen copiado");
+    mostrarAviso("Resumen copiado");
 }
 
 </script>
