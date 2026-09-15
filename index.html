@@ -162,6 +162,102 @@ button:hover{
 
 <div class="card">
 
+    <h2>Troubleshooting SBC</h2>
+
+    <h3>Paso 5 - Packet Trace</h3>
+
+    <div id="cmdTrace" class="comando"></div>
+
+    <button onclick="copiar('cmdTrace')">
+        Copiar comando
+    </button>
+
+</div>
+
+<div class="card">
+
+    <h3>Paso 6 - Find Session Agents</h3>
+
+    <div id="cmdFind" class="comando"></div>
+
+    <button onclick="copiar('cmdFind')">
+        Copiar comando
+    </button>
+
+    <br><br>
+
+    <label>Cantidad de Agents</label>
+    <input type="number" id="cantidadAgents">
+
+    <button onclick="crearAgents()">
+        Crear Agents
+    </button>
+
+</div>
+
+<div class="card">
+
+    <div id="agentsContainer"></div>
+
+</div>
+
+<div class="card">
+
+    <h3>Running Config Session Agent</h3>
+
+    <div id="cmdRunning" class="comando"></div>
+
+    <button onclick="copiar('cmdRunning')">
+        Copiar comando
+    </button>
+
+</div>
+
+<div class="card">
+
+    <h3>SIPD Agent</h3>
+
+    <div id="cmdSipd" class="comando"></div>
+
+    <button onclick="copiar('cmdSipd')">
+        Copiar comando
+    </button>
+
+</div>
+
+<div class="card">
+
+    <div id="ipsContainer"></div>
+
+    <button onclick="generarPingTraceroute()">
+        Generar Ping y Traceroute
+    </button>
+
+</div>
+
+<div class="card">
+
+    <h3>Ping</h3>
+
+    <div id="cmdPing" class="comando"></div>
+
+    <button onclick="copiar('cmdPing')">
+        Copiar comando
+    </button>
+
+    <h3>Traceroute</h3>
+
+    <div id="cmdTraceRoute" class="comando"></div>
+
+    <button onclick="copiar('cmdTraceRoute')">
+        Copiar comando
+    </button>
+
+</div>
+
+    
+<div class="card">
+
     <h3>Resumen Final</h3>
 
     <textarea id="resultado" rows="15"></textarea>
@@ -195,6 +291,8 @@ function actualizarPeer(){
 
     document.getElementById("cmdIpPeer").innerText =
     `show configuration sip-interface ${peer} short`;
+
+    actualizarTroubleshooting();
 }
 
 function mostrarAviso(mensaje) {
@@ -280,7 +378,145 @@ function copiarResumen(){
 
     mostrarAviso("Resumen copiado");
 }
+function obtenerVlan(interfaceName){
 
+    if(!interfaceName.includes(":"))
+        return "";
+
+    return interfaceName.split(":")[1];
+}
+
+
+function actualizarTroubleshooting(){
+
+    let ipcore =
+    document.getElementById("ipcore").value;
+
+    let intcore =
+    document.getElementById("intcore").value;
+
+    let ippeer =
+    document.getElementById("ippeer").value;
+
+    let intpeer =
+    document.getElementById("intpeer").value;
+
+    let peer =
+    document.getElementById("peer").value;
+
+    document.getElementById("cmdTrace").innerText =
+`packet-trace local start ${intcore} "vlan ${obtenerVlan(intcore)} && host ${ipcore}"
+packet-trace local start ${intpeer} "vlan ${obtenerVlan(intpeer)} && host ${ippeer}"
+
+packet-trace local stop all`;
+
+    document.getElementById("cmdFind").innerText =
+`find ${peer}`;
+}
+
+function crearAgents(){
+
+    let cantidad =
+    parseInt(document.getElementById("cantidadAgents").value);
+
+    let contenedor =
+    document.getElementById("agentsContainer");
+
+    contenedor.innerHTML = "";
+
+    for(let i=1;i<=cantidad;i++){
+
+        contenedor.innerHTML += `
+        <label>Agent ${i}</label>
+        <input type="text" id="agent${i}">
+        `;
+    }
+
+    contenedor.innerHTML += `
+    <button onclick="generarRunningConfig()">
+        Generar Configuración
+    </button>
+    `;
+}
+
+function generarRunningConfig(){
+
+    let cantidad =
+    parseInt(document.getElementById("cantidadAgents").value);
+
+    let running = "";
+    let sipd = "";
+
+    let ipsContainer =
+    document.getElementById("ipsContainer");
+
+    ipsContainer.innerHTML = "";
+
+    for(let i=1;i<=cantidad;i++){
+
+        let agent =
+        document.getElementById(`agent${i}`).value;
+
+        running +=
+`show running-config session-agent ${agent}
+
+`;
+
+        sipd +=
+`show sipd agent ${agent}
+
+`;
+
+        ipsContainer.innerHTML += `
+        <label>IP Agent ${i}</label>
+        <input type="text" id="ipagent${i}">
+        `;
+    }
+
+    document.getElementById("cmdRunning").innerText =
+    running;
+
+    document.getElementById("cmdSipd").innerText =
+    sipd;
+}
+
+function generarPingTraceroute(){
+
+    let cantidad =
+    parseInt(document.getElementById("cantidadAgents").value);
+
+    let intpeer =
+    document.getElementById("intpeer").value;
+
+    let ping = "";
+    let trace = "";
+
+    for(let i=1;i<=cantidad;i++){
+
+        let ip =
+        document.getElementById(`ipagent${i}`).value;
+
+        ping +=
+`ping ${ip} ${intpeer}
+
+`;
+
+        trace +=
+`traceroute ${ip} intf-name:vlan ${intpeer}
+
+`;
+    }
+
+    document.getElementById("cmdPing").innerText =
+    ping;
+
+    document.getElementById("cmdTraceRoute").innerText =
+    trace;
+}
+
+   
+
+    
 </script>
 
 </body>
