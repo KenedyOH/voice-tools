@@ -173,10 +173,24 @@ button:hover{
     </button>
 
 </div>
-
 <div class="card">
 
-    <h3>Paso 6 - Find Session Agents</h3>
+    <h3>Resumen Final</h3>
+
+    <textarea id="resultado" rows="15"></textarea>
+
+    <br><br>
+
+    <button onclick="copiarResumen()">
+        Copiar Resumen
+    </button>
+
+</div>
+
+    
+<div class="card">
+
+    <h3>Paso 3 - Find PEER</h3>
 
     <div id="cmdFind" class="comando"></div>
 
@@ -186,7 +200,7 @@ button:hover{
 
     <br><br>
 
-    <label>Cantidad de Agents</label>
+    <label>Paso 4 - ¿Cuántos Session Agents existen?</label>
     <input type="number" id="cantidadAgents">
 
     <button onclick="crearAgents()">
@@ -203,7 +217,7 @@ button:hover{
 
 <div class="card">
 
-    <h3>Running Config Session Agent</h3>
+    <h3>Paso 6 - Running Config Session Agent<</h3>
 
     <div id="cmdRunning" class="comando"></div>
 
@@ -215,7 +229,7 @@ button:hover{
 
 <div class="card">
 
-    <h3>SIPD Agent</h3>
+    <h3>Paso 8 - SIPD Agent</h3>
 
     <div id="cmdSipd" class="comando"></div>
 
@@ -237,7 +251,7 @@ button:hover{
 
 <div class="card">
 
-    <h3>Ping</h3>
+    <h3>Paso 9 - Ping<</h3>
 
     <div id="cmdPing" class="comando"></div>
 
@@ -245,7 +259,7 @@ button:hover{
         Copiar comando
     </button>
 
-    <h3>Traceroute</h3>
+    <h3>Paso 10 - Traceroute<</h3>
 
     <div id="cmdTraceRoute" class="comando"></div>
 
@@ -256,19 +270,7 @@ button:hover{
 </div>
 
     
-<div class="card">
 
-    <h3>Resumen Final</h3>
-
-    <textarea id="resultado" rows="15"></textarea>
-
-    <br><br>
-
-    <button onclick="copiarResumen()">
-        Copiar Resumen
-    </button>
-
-</div>
 <script>
 
 function actualizarCore(){
@@ -413,7 +415,7 @@ packet-trace local stop all`;
     document.getElementById("cmdFind").innerText =
 `find ${peer}`;
 }
-
+    
 function crearAgents(){
 
     let cantidad =
@@ -427,22 +429,25 @@ function crearAgents(){
     for(let i=1;i<=cantidad;i++){
 
         contenedor.innerHTML += `
-        <label>Agent ${i}</label>
-        <input type="text" id="agent${i}">
+
+        <label>Session Agent ${i}</label>
+
+        <input
+            type="text"
+            id="agent${i}"
+            oninput="actualizarAgents()">
+
         `;
     }
-
-    contenedor.innerHTML += `
-    <button onclick="generarRunningConfig()">
-        Generar Configuración
-    </button>
-    `;
 }
 
-function generarRunningConfig(){
+
+function actualizarAgents(){
 
     let cantidad =
     parseInt(document.getElementById("cantidadAgents").value);
+
+    if(!cantidad) return;
 
     let running = "";
     let sipd = "";
@@ -454,23 +459,29 @@ function generarRunningConfig(){
 
     for(let i=1;i<=cantidad;i++){
 
-        let agent =
-        document.getElementById(`agent${i}`).value;
+        let agente =
+        document.getElementById(`agent${i}`)?.value || "";
 
-        running +=
-`show running-config session-agent ${agent}
+        if(agente){
 
-`;
-
-        sipd +=
-`show sipd agent ${agent}
+            running +=
+`show running-config session-agent ${agente}
 
 `;
 
-        ipsContainer.innerHTML += `
-        <label>IP Agent ${i}</label>
-        <input type="text" id="ipagent${i}">
-        `;
+            sipd +=
+`show sipd agent ${agente}
+
+`;
+
+            ipsContainer.innerHTML += `
+            <label>IP Agent ${i}</label>
+            <input
+                type="text"
+                id="ipagent${i}"
+                oninput="actualizarPingTrace()">
+            `;
+        }
     }
 
     document.getElementById("cmdRunning").innerText =
@@ -480,7 +491,7 @@ function generarRunningConfig(){
     sipd;
 }
 
-function generarPingTraceroute(){
+function actualizarPingTrace(){
 
     let cantidad =
     parseInt(document.getElementById("cantidadAgents").value);
@@ -489,29 +500,32 @@ function generarPingTraceroute(){
     document.getElementById("intpeer").value;
 
     let ping = "";
-    let trace = "";
+    let traceroute = "";
 
     for(let i=1;i<=cantidad;i++){
 
         let ip =
-        document.getElementById(`ipagent${i}`).value;
+        document.getElementById(`ipagent${i}`)?.value || "";
 
-        ping +=
+        if(ip){
+
+            ping +=
 `ping ${ip} ${intpeer}
 
 `;
 
-        trace +=
+            traceroute +=
 `traceroute ${ip} intf-name:vlan ${intpeer}
 
 `;
+        }
     }
 
     document.getElementById("cmdPing").innerText =
     ping;
 
     document.getElementById("cmdTraceRoute").innerText =
-    trace;
+    traceroute;
 }
 
    
