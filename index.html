@@ -243,9 +243,7 @@ button:hover{
 
     <div id="ipsContainer"></div>
 
-    <button onclick="generarPingTraceroute()">
-        Generar Ping y Traceroute
-    </button>
+    
 
 </div>
 
@@ -369,6 +367,7 @@ ${intpeer}`;
 
     document.getElementById("resultado").value =
     salida;
+    actualizarTroubleshooting();
 }
 
 function copiarResumen(){
