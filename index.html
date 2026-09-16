@@ -69,7 +69,7 @@ button:hover{
     <input type="text" id="numero">
 
     <label>IP Core</label>
-    <input type="text" id="ipcore">
+    <input type="text" id="ipcore" oninput="actualizarTroubleshooting()">
 
     <label>Nombre Core</label>
     <input type="text" id="core" oninput="actualizarCore()">
@@ -110,7 +110,7 @@ button:hover{
     <br><br>
 
     <label>Interface Core</label>
-    <input type="text" id="intcore">
+    <input type="text" id="intcore" oninput="actualizarTroubleshooting()">
 
 </div>
 
@@ -129,7 +129,7 @@ button:hover{
     <br><br>
 
     <label>Interface Peer</label>
-    <input type="text" id="intpeer">
+    <input type="text" id="intpeer" oninput="actualizarTroubleshooting()">
 
 </div>
 
@@ -148,7 +148,7 @@ button:hover{
     <br><br>
 
     <label>IP Peer</label>
-    <input type="text" id="ippeer">
+    <input type="text" id="ippeer" oninput="actualizarTroubleshooting()">
 
 </div>
 
@@ -407,14 +407,20 @@ function actualizarTroubleshooting(){
     document.getElementById("peer").value;
 
     document.getElementById("cmdTrace").innerText =
+
 `packet-trace local start ${intcore} "vlan ${obtenerVlan(intcore)} && host ${ipcore}"
+
 packet-trace local start ${intpeer} "vlan ${obtenerVlan(intpeer)} && host ${ippeer}"
 
 packet-trace local stop all`;
 
     document.getElementById("cmdFind").innerText =
-`find ${peer}`;
+    `find ${peer}`;
+
+    generarResumen();
 }
+
+    
     
 function crearAgents(){
 
